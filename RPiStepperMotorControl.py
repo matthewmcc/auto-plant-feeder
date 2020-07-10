@@ -173,6 +173,8 @@ try:
     #               continue
     #           i=i-1 
 
+
+print("Final sleep delay: ", sleepDelay)
               
 except KeyboardInterrupt:
     GPIO.cleanup()
