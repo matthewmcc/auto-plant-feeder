@@ -174,7 +174,7 @@ try:
     #           i=i-1 
 
 
-print("Final sleep delay: ", sleepDelay)
+print "Final sleep delay: ", sleepDelay
               
 except KeyboardInterrupt:
     GPIO.cleanup()
