@@ -27,6 +27,7 @@ try:
         GPIO.output(out4, GPIO.LOW)
 
         sleepDelay = input()
+        speedIncreaseFactor = input()
 
         startTime = time.time()
         rampTime = time.time()
@@ -36,7 +37,7 @@ try:
         while not seconds_passed(startTime, 10):
             if seconds_passed(rampTime, 1):
                 rampTime = time.time()
-                sleepDelap = sleepDelay * .9
+                sleepDelap = sleepDelay * speedIncreaseFactor
 
             if currentStep == 7:
                 currentStep = 0
