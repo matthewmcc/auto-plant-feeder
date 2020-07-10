@@ -4,18 +4,50 @@ import time
 def seconds_passed(oldepoch, seconds):
     return time.time() - oldepoch >= seconds
 
+# Creates a sigmoid shape curve between (startSleepDelay, finalSleepDelay) at point (percentageOfFinalSpeedDelay)
+accelerationSigmoidCurveShape = 2
+def stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelay, finalSleepDelay):
+    if percentageOfFinalSpeedDelay >= 100:
+        return finalSleepDelay
+
+    standardisedPercentageOfFinalSpeedDelay = percentageOfFinalSpeedDelay / 100
+    aPOFSD = standardisedPercentageOfFinalSpeedDelay
+    
+    sigmoidDenominator = 1 + (aPOFSD / (1 - aPOFSD)) ** accelerationSigmoidCurveShape
+
+    return ((startSleepDelay - finalSleepDelay) / sigmoidDenominator) + finalSleepDelay
+
+deccelerationSigmoidCurveShape = -2
+def stepperMotorDecceleration(percentageOfFinalSpeedDelay, startSleepDelay, finalSleepDelay):
+    if percentageOfFinalSpeedDelay <= 0:
+        return startSleepDelay
+
+    standardisedPercentageOfFinalSpeedDelay = percentageOfFinalSpeedDelay / 100
+    aPOFSD = standardisedPercentageOfFinalSpeedDelay
+    
+    sigmoidDenominator = 1 + (aPOFSD / (1 - aPOFSD)) ** deccelerationSigmoidCurveShape
+
+    return ((startSleepDelay - finalSleepDelay) / sigmoidDenominator) + finalSleepDelay
+
+oneMillion = 1000000
+usleep = lambda sleepTimeMicroSeconds : time.sleep(sleepTimeMicroSeconds / onemillion)
+
 out1 = 13
 out2 = 11
 out3 = 15
 out4 = 12
-
-sleepDelay = .01
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(out1,GPIO.OUT)
 GPIO.setup(out2,GPIO.OUT)
 GPIO.setup(out3,GPIO.OUT)
 GPIO.setup(out4,GPIO.OUT)
+
+motorRunTimeInSecs = 10
+motorAccelerationTimeSecs = 2
+motorDecelerationTimeSecs = 1.5
+
+startSleepDelaySecs = .01
 
 print("Input steep delay in seconds. And a ramp up factor.")
 
@@ -26,24 +58,23 @@ try:
         GPIO.output(out3, GPIO.LOW)
         GPIO.output(out4, GPIO.LOW)
 
-        sleepDelay = input()
-        speedIncreaseFactor = input()
+        finalSleepDelaySecs = input()
+        sleepDelaySecs = startSleepDelaySecs
 
         startTime = time.time()
         rampTime = time.time()
 
-        oneMillion = 1000000
-
         currentStep = 0
 
-        while not seconds_passed(startTime, 10):
-            if seconds_passed(rampTime, 1):
-                rampTime = time.time()
+        while not seconds_passed(startTime, motorRunTimeInSecs):
+            # Acceleration
+            if not seconds_passed(startTime, motorAccelerationTimeSecs):
+                percentageOfFinalSpeedDelay = (motorAccelerationTimeSecs / (startTime - time.time())) * 100
+                sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelay, finalSleepDelay)
+            else:
+                sleepDelaySecs = finalSleepDelaySecs
+            # else if seconds_passed(startTime, motorRunTimeInSecs - motorDecelerationTimeSecs):
 
-                nonDecimalSleepDelay = sleepDelay * oneMillion
-                nonDecimalSleepDelay = nonDecimalSleepDelay * speedIncreaseFactor
-
-                sleepDelay = nonDecimalSleepDelay / oneMillion
 
             if currentStep == 7:
                 currentStep = 0
@@ -98,7 +129,7 @@ try:
                 GPIO.output(out3, GPIO.LOW)
                 GPIO.output(out4, GPIO.HIGH)
 
-            time.sleep(sleepDelay)
+            usleep(sleepDelaySecs)
 
     print("Final sleep delay: ", str(sleepDelay))
       
