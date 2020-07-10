@@ -17,7 +17,7 @@ GPIO.setup(out2,GPIO.OUT)
 GPIO.setup(out3,GPIO.OUT)
 GPIO.setup(out4,GPIO.OUT)
 
-print "First calibrate by giving some +ve and -ve values....."
+print("Input steep delay in seconds. And a ramp up factor.")
 
 try:
     while(1):
@@ -99,6 +99,8 @@ try:
                 GPIO.output(out4, GPIO.HIGH)
 
             time.sleep(sleepDelay)
+
+    print("Final sleep delay: ", str(sleepDelay))
       
     #   elif stepsToMove < 0 and stepsToMove >= -400:
     #       stepsToMove=stepsToMove*-1
@@ -172,9 +174,6 @@ try:
     #               i=7
     #               continue
     #           i=i-1 
-
-
-print "Final sleep delay: ", sleepDelay
               
 except KeyboardInterrupt:
     GPIO.cleanup()
