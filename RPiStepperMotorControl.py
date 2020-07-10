@@ -32,12 +32,18 @@ try:
         startTime = time.time()
         rampTime = time.time()
 
+        oneMillion = 1000000
+
         currentStep = 0
 
         while not seconds_passed(startTime, 10):
             if seconds_passed(rampTime, 1):
                 rampTime = time.time()
-                sleepDelap = sleepDelay * speedIncreaseFactor
+
+                nonDecimalSleepDelay = sleepDelay * oneMillion
+                nonDecimalSleepDelay = nonDecimalSleepDelay * speedIncreaseFactor
+
+                sleepDelay = nonDecimalSpeedDelay / oneMillion
 
             if currentStep == 7:
                 currentStep = 0
