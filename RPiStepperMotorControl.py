@@ -43,7 +43,7 @@ try:
                 nonDecimalSleepDelay = sleepDelay * oneMillion
                 nonDecimalSleepDelay = nonDecimalSleepDelay * speedIncreaseFactor
 
-                sleepDelay = nonDecimalSpeedDelay / oneMillion
+                sleepDelay = nonDecimalSleepDelay / oneMillion
 
             if currentStep == 7:
                 currentStep = 0
