@@ -60,6 +60,7 @@ def calculateSleepDelay(startTime, finalSleepDelaySecs):
     # Acceleration
     if not seconds_passed(startTime, motorAccelerationTimeSecs):
         percentageOfFinalSpeedDelay = (motorAccelerationTimeSecs / (startTime - time.time())) * 100
+        print("Speed delay: ", percentageOfFinalSpeedDelay)
         sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
     else:
         sleepDelaySecs = finalSleepDelaySecs
@@ -74,7 +75,7 @@ try:
     while(1):
         resetGPIOPins()
 
-        finalSleepDelaySecs = input()
+        finalSleepDelaySecs = int(input())
         sleepDelaySecs = startSleepDelaySecs
 
         startTime = time.time()
