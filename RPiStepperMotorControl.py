@@ -59,7 +59,8 @@ startSleepDelaySecs = .01
 def calculateSleepDelay(startTime, finalSleepDelaySecs):
     # Acceleration
     if not seconds_passed(startTime, motorAccelerationTimeSecs):
-        percentageOfFinalSpeedDelay = (motorAccelerationTimeSecs / (startTime - time.time())) * 100
+        print("Start Time: ", startTime, ", time passed: ", startTime - time.time())
+        percentageOfFinalSpeedDelay = ((startTime - time.time()) / motorAccelerationTimeSecs) * 100
         print("Speed delay: ", percentageOfFinalSpeedDelay)
         sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
     else:
