@@ -51,21 +51,25 @@ oneMillion = 1000000
 usleep = lambda sleepTimeMicroSeconds : time.sleep(sleepTimeMicroSeconds / oneMillion)
 
 motorRunTimeInSecs = 10
-motorAccelerationTimeSecs = 2
-motorDecelerationTimeSecs = 1.5
+motorAccelerationTimeSecs = 3
+motorDecelerationTimeSecs = 3
 
-startSleepDelaySecs = .01
+startSleepDelaySecs = .1
 
 def calculateSleepDelay(startTime, finalSleepDelaySecs):
     # Acceleration
     if not seconds_passed(startTime, motorAccelerationTimeSecs):
-        print("Start Time: ", startTime, ", time passed: ", time.time() - startTime)
         percentageOfFinalSpeedDelay = ((time.time() - startTime) / motorAccelerationTimeSecs) * 100
-        print("Speed delay: ", percentageOfFinalSpeedDelay)
         sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
+
+    elif seconds_passed(startTime, motorRunTimeInSecs - motorDecelerationTimeSecs):
+        decelStartTime = startTime + motorRunTimeInSecs - motorDecelerationTimeSecs
+        percentageOfFinalSpeedDelay = ((time.time() - decelStartTime) / motorDecelerationTimeSecs) * 100
+        sleepDelaySecs = stepperMotorDecceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
+
     else:
         sleepDelaySecs = finalSleepDelaySecs
-    # else if seconds_passed(startTime, motorRunTimeInSecs - motorDecelerationTimeSecs):
+        
     return sleepDelaySecs
 
 setupGPIOPins()
