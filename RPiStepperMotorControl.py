@@ -30,7 +30,7 @@ def stepperMotorDecceleration(percentageOfFinalSpeedDelay, startSleepDelay, fina
     return ((startSleepDelay - finalSleepDelay) / sigmoidDenominator) + finalSleepDelay
 
 oneMillion = 1000000
-usleep = lambda sleepTimeMicroSeconds : time.sleep(sleepTimeMicroSeconds / onemillion)
+usleep = lambda sleepTimeMicroSeconds : time.sleep(sleepTimeMicroSeconds / oneMillion)
 
 out1 = 13
 out2 = 11
@@ -70,7 +70,7 @@ try:
             # Acceleration
             if not seconds_passed(startTime, motorAccelerationTimeSecs):
                 percentageOfFinalSpeedDelay = (motorAccelerationTimeSecs / (startTime - time.time())) * 100
-                sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelay, finalSleepDelay)
+                sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
             else:
                 sleepDelaySecs = finalSleepDelaySecs
             # else if seconds_passed(startTime, motorRunTimeInSecs - motorDecelerationTimeSecs):
