@@ -83,7 +83,7 @@ try:
         currentStep = 0
 
         while not seconds_passed(startTime, motorRunTimeInSecs):
-            sleepDelaySecs = calculateSleepDelay(startTime)
+            sleepDelaySecs = calculateSleepDelay(startTime, finalSleepDelaySecs)
             print("Calculated sleep delay: ", sleepDelaySecs)
 
             if currentStep == 7:
