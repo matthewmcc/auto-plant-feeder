@@ -75,7 +75,7 @@ try:
     while(1):
         resetGPIOPins()
 
-        finalSleepDelaySecs = int(input())
+        finalSleepDelaySecs = float(input())
         sleepDelaySecs = startSleepDelaySecs
 
         startTime = time.time()
