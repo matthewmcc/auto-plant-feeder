@@ -69,7 +69,7 @@ def calculateSleepDelay(startTime, finalSleepDelaySecs):
 
     else:
         sleepDelaySecs = finalSleepDelaySecs
-        
+
     return sleepDelaySecs
 
 setupGPIOPins()
@@ -147,8 +147,6 @@ try:
 
             time.sleep(sleepDelaySecs)
             # usleep(sleepDelaySecs)
-
-    print("Final sleep delay: ", str(sleepDelaySecs))
       
     #   elif stepsToMove < 0 and stepsToMove >= -400:
     #       stepsToMove=stepsToMove*-1
