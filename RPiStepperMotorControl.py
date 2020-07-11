@@ -29,19 +29,26 @@ def stepperMotorDecceleration(percentageOfFinalSpeedDelay, startSleepDelay, fina
 
     return ((startSleepDelay - finalSleepDelay) / sigmoidDenominator) + finalSleepDelay
 
-oneMillion = 1000000
-usleep = lambda sleepTimeMicroSeconds : time.sleep(sleepTimeMicroSeconds / oneMillion)
-
 out1 = 13
 out2 = 11
 out3 = 15
 out4 = 12
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(out1,GPIO.OUT)
-GPIO.setup(out2,GPIO.OUT)
-GPIO.setup(out3,GPIO.OUT)
-GPIO.setup(out4,GPIO.OUT)
+def setupGPIOPins():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(out1,GPIO.OUT)
+    GPIO.setup(out2,GPIO.OUT)
+    GPIO.setup(out3,GPIO.OUT)
+    GPIO.setup(out4,GPIO.OUT)
+
+def resetGPIOPins():
+    GPIO.output(out1, GPIO.LOW)
+    GPIO.output(out2, GPIO.LOW)
+    GPIO.output(out3, GPIO.LOW)
+    GPIO.output(out4, GPIO.LOW)
+
+oneMillion = 1000000
+usleep = lambda sleepTimeMicroSeconds : time.sleep(sleepTimeMicroSeconds / oneMillion)
 
 motorRunTimeInSecs = 10
 motorAccelerationTimeSecs = 2
@@ -49,14 +56,23 @@ motorDecelerationTimeSecs = 1.5
 
 startSleepDelaySecs = .01
 
+def calculateSleepDelay(startTime, finalSleepDelaySecs):
+    # Acceleration
+    if not seconds_passed(startTime, motorAccelerationTimeSecs):
+        percentageOfFinalSpeedDelay = (motorAccelerationTimeSecs / (startTime - time.time())) * 100
+        sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
+    else:
+        sleepDelaySecs = finalSleepDelaySecs
+    # else if seconds_passed(startTime, motorRunTimeInSecs - motorDecelerationTimeSecs):
+    return sleepDelaySecs
+
+setupGPIOPins()
+
 print("Input steep delay in seconds. And a ramp up factor.")
 
 try:
     while(1):
-        GPIO.output(out1, GPIO.LOW)
-        GPIO.output(out2, GPIO.LOW)
-        GPIO.output(out3, GPIO.LOW)
-        GPIO.output(out4, GPIO.LOW)
+        resetGPIOPins()
 
         finalSleepDelaySecs = input()
         sleepDelaySecs = startSleepDelaySecs
@@ -67,14 +83,8 @@ try:
         currentStep = 0
 
         while not seconds_passed(startTime, motorRunTimeInSecs):
-            # Acceleration
-            if not seconds_passed(startTime, motorAccelerationTimeSecs):
-                percentageOfFinalSpeedDelay = (motorAccelerationTimeSecs / (startTime - time.time())) * 100
-                sleepDelaySecs = stepperMotorAcceleration(percentageOfFinalSpeedDelay, startSleepDelaySecs, finalSleepDelaySecs)
-            else:
-                sleepDelaySecs = finalSleepDelaySecs
-            # else if seconds_passed(startTime, motorRunTimeInSecs - motorDecelerationTimeSecs):
-
+            sleepDelaySecs = calculateSleepDelay(startTime)
+            print("Calculated sleep delay: ", sleepDelaySecs)
 
             if currentStep == 7:
                 currentStep = 0
@@ -131,7 +141,7 @@ try:
 
             usleep(sleepDelaySecs)
 
-    print("Final sleep delay: ", str(sleepDelay))
+    print("Final sleep delay: ", str(sleepDelaySecs))
       
     #   elif stepsToMove < 0 and stepsToMove >= -400:
     #       stepsToMove=stepsToMove*-1
