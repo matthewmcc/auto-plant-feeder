@@ -74,7 +74,7 @@ def calculateSleepDelay(startTime, finalSleepDelaySecs):
 
 setupGPIOPins()
 
-print("Input steep delay in seconds. And a ramp up factor.")
+print("Input steep delay in seconds. Min: .1, Max: .0004")
 
 try:
     while(1):
@@ -90,7 +90,6 @@ try:
 
         while not seconds_passed(startTime, motorRunTimeInSecs):
             sleepDelaySecs = calculateSleepDelay(startTime, finalSleepDelaySecs)
-            print("Calculated sleep delay: ", sleepDelaySecs)
 
             if currentStep == 7:
                 currentStep = 0
