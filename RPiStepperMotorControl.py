@@ -141,7 +141,8 @@ try:
                 GPIO.output(out3, GPIO.LOW)
                 GPIO.output(out4, GPIO.HIGH)
 
-            usleep(sleepDelaySecs)
+            time.sleep(sleepDelaySecs)
+            # usleep(sleepDelaySecs)
 
     print("Final sleep delay: ", str(sleepDelaySecs))
       
